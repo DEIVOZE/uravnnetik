@@ -1,0 +1,6 @@
+SQLAlchemy
+Werkzeug
+WTForms
+Flask
+flask-wtf
+flask-login
