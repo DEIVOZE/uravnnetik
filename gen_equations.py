@@ -140,13 +140,15 @@ def gen_eq(typee):
 def add_into_db(lvl, module, task, current_user):
     equat = gen_eq(int(f'{lvl}{module}'))
     db_sess = db_session.create_session()
-    temp = [i.text_task for i in db_sess.query(Progress).filter(Progress.level_id == lvl,
+    temp = [i.text_task for i in db_sess.query(Progress).filter(Progress.user_id == current_user,
+                                                                Progress.level_id == lvl,
                                                                 Progress.module_id == module)]
     while equat[0] in temp:
         equat = gen_eq(int(f'{lvl}{module}'))
         print(equat)
 
-    eqs = db_sess.query(Progress).filter(Progress.level_id == lvl,
+    eqs = db_sess.query(Progress).filter(Progress.user_id == current_user,
+                                         Progress.level_id == lvl,
                                          Progress.module_id == module,
                                          Progress.task_id == task).first()
     if not eqs:
@@ -159,3 +161,22 @@ def add_into_db(lvl, module, task, current_user):
         progress.answer = equat[1]
         db_sess.add(progress)
         db_sess.commit()
+
+
+def gen_message():
+    return choice(["Ты настоящий нейронный гений!",
+                   "Мозг как суперкомпьютер!",
+                   "Ты вычислительный мастер!"
+                   "У тебя мозги как у математического гуру!",
+                   "Ты настоящий аналитический асс!",
+                   "Твои нейронные сети работают на полную мощность!",
+                   "Ты настоящий король математики!",
+                   "Твои знания — это прямая трансляция из квантового компьютера!",
+                   "Твои решения на уровне искусственного интеллекта!",
+                   "Ты нейро-процессор в человеческом облике!",
+                   "Ты словно ходячий алгоритм!",
+                   "Твои мозги — настоящая фабрика идей!",
+                   "Ты аналитический виртуоз!",
+                   "Твоя интуиция на уровне машинного обучения!",
+                   "Ты словно живой калькулятор!",
+                   "Ты прям мозг!"])
