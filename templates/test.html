@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Всплывающий диалог</title>
+    <style>
+        dialog {
+            width: fit-content;
+            padding: 20px;
+            background-color: #101010;
+            border-radius: 20px;
+            border-color: #101010;
+            color: #c9f31d;
+        }
+    </style>
+</head>
+<body>
+    <button id="openDialog">Открыть диалог</button>
+
+    <dialog id="myDialog">
+        <h2>Поздравляем!</h2>
+        <p>Уровень 2 открыт!</p>
+        <button id="closeDialog">Отлично</button>
+    </dialog>
+
+    <script>
+        const dialog = document.getElementById('myDialog');
+        const closeDialogButton = document.getElementById('closeDialog');
+
+        function openDialogButton() {
+            dialog.showModal(); // Открыть диалог как модальное окно
+        };
+
+        closeDialogButton.addEventListener('click', () => {
+            dialog.close(); // Закрыть диалог
+        });
+
+        window.onload = openDialogButton;
+    </script>
+</body>
+</html>
