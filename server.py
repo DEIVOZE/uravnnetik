@@ -1,18 +1,18 @@
 import json
-from random import choice
 
-from flask import Flask, render_template, redirect, abort, request
+from flask import Flask, render_template, redirect, request
 from data import db_session
 from data.level_module_task import Progress
 from data.users import User
 from forms.user import RegisterForm, LoginForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from gen_equations import gen_lvl3, add_into_db, gen_message
+from gen_equations import add_into_db, gen_message, gen_eq
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "hackaton_cubes"
+app.config["SECRET_KEY"] = "uravnnetik"
 login_manager = LoginManager()
 login_manager.init_app(app)
+db_session.global_init("uravnnetik.db")
 
 
 def get_data_json(num_level):

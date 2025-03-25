@@ -4,3 +4,5 @@ WTForms
 Flask
 flask-wtf
 flask-login
+python-dotenv
+google-generativeai

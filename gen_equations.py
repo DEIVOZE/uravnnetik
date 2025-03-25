@@ -1,7 +1,16 @@
+import os
 from random import randint, choice, shuffle
+
+from dotenv import load_dotenv
 
 from data import db_session
 from data.level_module_task import Progress
+import google.generativeai as genai
+
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
+genai.configure(api_key=API_KEY)
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 
 def fk(typ, koef):
@@ -19,7 +28,7 @@ def fk(typ, koef):
             return f'+ {koef}'
 
 
-def gen_lvl1(k=1, b=0):
+def gen_lvl1(k=1, b=0, text=False):
     if k != 1:
         k = randint(-10, 10)
         while k == 0 or k == 1:
@@ -29,6 +38,10 @@ def gen_lvl1(k=1, b=0):
         b = randint(-10, 10)
         while b == 0:
             b = randint(-10, 10)
+    if text:
+        k = abs(k)
+        b = abs(b)
+        x = abs(x)
     if b == 0:
         return {
             'k': k,
@@ -56,7 +69,7 @@ def gen_lvl2_module1():
         return f'x² {fk(2, -r[0])} = {r[1]}', str(x) + ' ' + str(-x)
 
 
-def gen_lvl2_module2(c=0):
+def gen_lvl2_module2(c=0, text=False):
     if c:
         x1, x2 = randint(-10, 10), randint(-10, 10)
         while x1 == x2:
@@ -67,6 +80,10 @@ def gen_lvl2_module2(c=0):
             x2 = randint(-10, 10)
 
     a = randint(-3, 3)
+    if text:
+        a = abs(a)
+        x1 = abs(x1)
+        x2 = abs(x2)
     while a == 0:
         a = randint(-3, 3)
     b = -a * (x1 + x2)
@@ -110,12 +127,45 @@ def gen_lvl3():
     return lst, str(x) + ' ' + str(y)
 
 
-def gen_eq(typee):
+def gen_lvl4(module):
+    if module == 1:
+        eq = gen_eq(11, text=True)
+        prompt = f"""Создайте словесную задачу по данному уровнению: {eq[0]}.
+                            Замените 'x' на переменную, представляющую реальный объект.
+                            Не упоминайте значение 'x' в самой задаче.
+                            Задача должна быть увлекательной и, по возможности,
+                            немного юмористической и при этом
+                            достаточно короткая. Кроме задачи ничего не выводи"""
+    elif module == 2:
+        eq = gen_eq(12, text=True)
+        prompt = f"""Создайте словесную задачу по данному уровнению: {eq[0]}.
+                            Замените 'x' на переменную, представляющую реальный объект.
+                            Не упоминайте значение 'x' в самой задаче.
+                            Задача должна быть увлекательной и, по возможности,
+                            немного юмористической и при этом
+                            достаточно короткая. Кроме задачи ничего не выводи"""
+    else:
+        eq = gen_eq(22, text=True)
+        prompt = f"""Создайте словесную задачу по данному уровнению: {eq[0]}.
+                            Замените 'x' на переменную, представляющую реальный объект.
+                            Не упоминайте значение 'x' в самой задаче.
+                            Задача должна быть увлекательной и, по возможности,
+                            немного юмористической и при этом
+                            достаточно короткая. Кроме задачи ничего не выводи.
+                            Вот пример: Одно число на 3 меньше другого.
+                             Найди большее число, если известно, 
+                             что их произведение равно 108."""
+
+    response = model.generate_content(prompt)
+    return response.text, eq[1]
+
+
+def gen_eq(typee, text=False):
     if typee == 11:
-        koef = gen_lvl1(b=1)
+        koef = gen_lvl1(b=1, text=text)
         return f'x {fk(2, koef["b"])} = {koef["c"]}', koef["x"]
     elif typee == 12:
-        koef = gen_lvl1(k=0)
+        koef = gen_lvl1(k=0, text=text)
         return f'{fk(1, koef["k"])}x = {koef["c"]}', koef["x"]
     elif typee == 13:
         koef = gen_lvl1(k=0, b=1)
@@ -123,7 +173,7 @@ def gen_eq(typee):
     elif typee == 21:
         return gen_lvl2_module1()
     elif typee == 22:
-        koef = gen_lvl2_module2()
+        koef = gen_lvl2_module2(text=text)
         return f'{fk(1, koef["a"])}x² {fk(2, koef["b"])}x = 0', koef["x"]
     elif typee == 23:
         koef = gen_lvl2_module3()
@@ -133,6 +183,12 @@ def gen_eq(typee):
         return f'{fk(1, koef["a"])}x² {fk(2, koef["b"])}x {fk(2, koef["c"])} = 0', koef["x"]
     elif typee == 31:
         return gen_lvl3()
+    elif typee == 41:
+        return gen_lvl4(1)
+    elif typee == 42:
+        return gen_lvl4(2)
+    elif typee == 43:
+        return gen_lvl4(3)
 
 
 def add_into_db(lvl, module, task, current_user):
@@ -195,3 +251,6 @@ def gen_message(res):
         "Ха, не угадали! Зато теперь вы точно запомните правильный ответ!",
         "О, интересный вариант, но не совсем. Подумайте ещё разочек!"
     ])
+
+
+print(gen_eq(41))
