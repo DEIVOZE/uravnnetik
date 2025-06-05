@@ -1,9 +1,5 @@
 ![name_project_630_142](https://github.com/yandexLyceumVlad/TestSite/assets/16120976/392dad30-bbaf-44ce-9ec5-bb69ab7cdb23)
 
-Приложение разработано к Всероссийскому хакатону 
-«Обучаюсь. Проектирую. Программирую. Будущее»:
-Направление «Программирование»
-https://it-cube.ficto.ru/hackathon.html
 
 # О проекте
 
